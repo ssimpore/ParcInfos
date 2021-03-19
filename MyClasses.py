@@ -10,6 +10,10 @@ from ParcClasses import Parc
 
 # from PyQt5.QtWebEngineWidgets import QWebEngineSettings, QWebEngineView, QWebEnginePage
 
+
+
+
+
 class Cadre(QFrame):
     def __init__(self, parent=None, xywh=None):
         QFrame.__init__(self, parent)
@@ -59,8 +63,8 @@ class InfosGenerale(Cadre):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        self.label_colone1 = [QLabel(elt + ' :') for elt in self.param.label_colone1]
-        self.label_colone2 = [QLabel(elt + ' :') for elt in self.param.label_colone2]
+        self.label_colone1 = [QLabel(elt + ' :') for elt in self.param.label_col1]
+        self.label_colone2 = [QLabel(elt + ' :') for elt in self.param.label_col2]
         self.textbrowser1 = [QTextBrowser() for elt in range(0, min(len(self.label_colone1), len(self.label_colone2)))]
         self.textbrowser2 = [QTextBrowser() for elt in range(0, min(len(self.label_colone1), len(self.label_colone2)))]
 
