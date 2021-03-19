@@ -6,9 +6,9 @@ import os.path
 class Data:
     verify_name = 'None'
 
-    def verify(df, nom_parc, variable):
-        if nom_parc in list(df.index):
-            r = df.loc[nom_parc, variable]
+    def verify(self, nom_parc, variable):
+        if nom_parc in list(self.index):
+            r = self.loc[nom_parc, variable]
         else:
             r = Data.verify_name
         if (str(r) != 'nan') and (r != Data.verify_name):
@@ -17,10 +17,11 @@ class Data:
             x = Data.verify_name
         return x
 
-    def __init__(self, path, new=False):
+    def __init__(self, new=False):
+        self.index = None
         update = new or (not os.path.isfile('data'))
         if update:
-            self.path = path
+            self.path = "data.xlsx"
             self.dfparc = pd.read_excel(self.path, sheet_name='Parc', index_col=1)
             self.dfagence = pd.read_excel(self.path, sheet_name='Agence', index_col=0)
             self.dfresponsable = pd.read_excel(self.path, sheet_name='Responsable', index_col=0)
@@ -57,7 +58,7 @@ class Data:
 
 class Exploitant(Data):
     def __init__(self, nom_parc, new=False):
-        Data.__init__(self, new)
+        super().__init__(new)
         self.nom = Data.verify(self.dfparc, nom_parc, 'EXPLOITANT')
         self.telephone = Data.verify(self.dfexploitant, self.nom, 'TELEPHONE')
         self.email = Data.verify(self.dfexploitant, self.nom, 'EMAIL')
@@ -69,7 +70,7 @@ class Exploitant(Data):
 
 class Responsable(Data):
     def __init__(self, nom_parc, new=False):
-        Data.__init__(self, new)
+        super().__init__(new)
         self.agence = Data.verify(self.dfparc, nom_parc, 'AGENCE')
         self.nom = Data.verify(self.dfresponsable, self.agence, 'NOM')
         self.telephone = Data.verify(self.dfresponsable, self.agence, 'TELEPHONE')
@@ -82,7 +83,7 @@ class Responsable(Data):
 
 class Agence(Data):
     def __init__(self, nom_parc, new=False):
-        Data.__init__(self, new)
+        super().__init__(new)
         self.nom = Data.verify(self.dfparc, nom_parc, 'AGENCE')
         self.responsable = Data.verify(self.dfresponsable, self.nom, 'NOM')
         self.astreinte = Data.verify(self.dfagence, self.nom, 'N° ASTREINTE')
@@ -96,7 +97,7 @@ class Agence(Data):
 class Mainteneur(Data):
     class Niveau(Data):
         def __init__(self, nom, new=False):
-            Data.__init__(self, new)
+            super().__init__(new)
             self.nom = nom
             self.telephone = Data.verify(self.dfmainteneur, self.nom, 'TELEPHONE')
             self.email_entreprise = Data.verify(self.dfmainteneur, self.nom, 'EMAIL ENTREPRISE')
@@ -110,16 +111,17 @@ class Mainteneur(Data):
 
 
 class Parc(Data):
-    def verify(df, nom):
-        if nom in list(df.index):
+    def verify(self, nom, **kwargs):
+        if nom in list(self.index):
             r = nom
         else:
             r = Data.verify_name
         return r
 
     def __init__(self, nom_parc, new=False):
-        Data.__init__(self, new)
-        self.nom = Parc.verify(self.dfparc, nom_parc)
+        super().__init__(new)
+        self.index = None
+        self.nom = Parc.verify(self.dfparc, nom_parc, )
         self.trigramme = Data.verify(self.dfparc, self.nom, 'CODE')
         self.technologie = Data.verify(self.dfparc, self.nom, 'TECHNOLOGIE')
         self.statut = Data.verify(self.dfparc, self.nom, 'STATUT')
@@ -152,4 +154,5 @@ class Parc(Data):
 
 
 if __name__ == "__main__":
-    x = Data('data.xlsx')
+    x = Data()
+    print(x)

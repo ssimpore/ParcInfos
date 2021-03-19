@@ -1,22 +1,14 @@
+import sys
 from PyQt5.QtWidgets import QApplication
-from PlantClasses import Parc
-from MyApps import *
+from MyApp import Fenetre, Navigation, CadreApp, SelectionFonction, InfosGenerale
 
 if __name__ == "__main__":
+    new = 0
     app = QApplication(sys.argv)
-
-    P = Parc('')
-    x = P.exploitant
-    print(x)
-
     screen = Fenetre()
-    navespace = Navigation(screen, screen.config.nav)
+    navespace = Navigation(screen, screen.config.nav, new)
     appspace = CadreApp(screen, screen.config.app)
     selectspace = SelectionFonction(appspace, screen.config.select)
     infosspace = InfosGenerale(appspace, screen.config.infos)
-
     screen.showMaximized()
-
-    print(screen.data.dfparc.head())
-
     app.exec_()

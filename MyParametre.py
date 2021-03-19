@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QDesktopWidget
 
 
-class Affichage:
+class Screenlabel:
     def __init__(self):
         self.list_app = ['INFOS', 'ALERTE']
         self.list_option = ['Informations générales', 'Informations ACR (ENEDIS)', 'Informations COM (IP)',
