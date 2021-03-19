@@ -49,8 +49,6 @@ class ScreenConfig:
         self.select = (x_select, y_select, w_select, h_select)
         self.infos = (x_infos, y_infos, w_infos, h_infos)
 
-
-
 if __name__ == "__main__":
     config = ScreenConfig()
     print(config)
