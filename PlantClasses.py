@@ -42,7 +42,6 @@ def getData(new=False):
 
 class Data:
     verify_name = 'None'
-
     def verify(df, nom_parc, variable):
         if nom_parc in list(df.index):
             r = df.loc[nom_parc, variable]
@@ -63,6 +62,8 @@ class Data:
         self.dfmainteneur = df.mainteneur
         self.dfsolar = df.solar
         self.dfwind = df.wind
+        self.param = Parametre()
+
 
 
 class Exploitant(Data):
@@ -192,6 +193,7 @@ class Parametre:
                                    'N° responsable', 'Statut parc',
                                    'Mainteneur',
                                    'N° astreinte maint.', 'Latitude']
+
 
 class ScreenConfig:
     def __init__(self):

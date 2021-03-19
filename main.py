@@ -1,16 +1,22 @@
-# This is a sample Python script.
+from PyQt5.QtWidgets import QApplication
+from PlantClasses import Parc
+from MyApps import *
 
-# Press Maj+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
 
+    P = Parc('')
+    x = P.exploitant
+    print(x)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    screen = Fenetre()
+    navespace = Navigation(screen, screen.config.nav)
+    appspace = CadreApp(screen, screen.config.app)
+    selectspace = SelectionFonction(appspace, screen.config.select)
+    infosspace = InfosGenerale(appspace, screen.config.infos)
 
+    screen.showMaximized()
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+    print(screen.data.dfparc.head())
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    app.exec_()

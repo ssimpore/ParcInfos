@@ -1,8 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QFrame, QTextBrowser, QRadioButton, QPushButton, QComboBox, \
-    QMainWindow, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QDesktopWidget, QApplication
+    QMainWindow, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel
 from PyQt5 import QtCore, QtGui
-from PlantClasses import Parametre, Parc,ScreenConfig
+from PlantClasses import Parametre, ScreenConfig, Data
 
 
 class TextBrowser(QTextBrowser):
@@ -52,7 +52,7 @@ class SelectionFonction(Cadre):
         self.comb_selection_parc = QComboBox()
         self.button_selection = PushButton('GO')
 
-        self.selection = [RadioButton(elt) for elt in self.param.list_option]
+        self.selection = [RadioButton(elt) for elt in Fenetre.data.param.list_option]
         self.selection[0].setChecked(True)
         for elt in self.selection:
             v_layout_list_option.addWidget(elt)
@@ -66,8 +66,8 @@ class InfosGenerale(Cadre):
         Cadre.__init__(self, parent, config)
         layout = QGridLayout()
         self.setLayout(layout)
-        self.label_col1 = [Label(elt + ' :') for elt in param.label_colone1]
-        self.label_col2 = [Label(elt + ' :') for elt in param.label_colone2]
+        self.label_col1 = [Label(elt + ' :') for elt in Fenetre.data.param.label_colone1]
+        self.label_col2 = [Label(elt + ' :') for elt in Fenetre.data.param.label_colone2]
         self.infos_col1 = [TextBrowser(elt) for elt in
                            range(0, min(len(self.label_col1), len(self.label_col2)))]
         self.infos_col2 = [TextBrowser(elt) for elt in
@@ -89,13 +89,15 @@ class Navigation(Cadre):
     def __init__(self, parent, config):
         Cadre.__init__(self, parent, config)
         h_layout = QHBoxLayout()
-        self.selection = [QRadioButton(elt) for elt in param.list_app]
+        self.selection = [QRadioButton(elt) for elt in Fenetre.data.param.list_app]
         self.selection[0].setChecked(True)
         for elt in self.selection:
             h_layout.addWidget(elt)
             self.setLayout(h_layout)
 
+
 class Fenetre(QMainWindow):
+    data = Data()
 
     def __init__(self):
         QMainWindow.__init__(self)
@@ -103,23 +105,22 @@ class Fenetre(QMainWindow):
         self.setWindowIcon(QtGui.QIcon('solar-panel.png'))
         self.setWindowTitle('Help')
         self.config = ScreenConfig()
-        self.data = 4
 
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    P = Parc('Arsac 1')
-    x = P.exploitant
-    print(x)
-
-    param = Parametre()
-
-    screen = Fenetre()
-
-    navespace = Navigation(screen, screen.config.nav)
-    appspace = CadreApp(screen, screen.config.app)
-    selectspace = SelectionFonction(appspace, screen.config.select)
-    infosspace = InfosGenerale(appspace, screen.config.infos)
-
-    screen.showMaximized()
-    app.exec_()
+#
+# if __name__ == "__main__":
+#     app = QApplication(sys.argv)
+#     P = Parc('Arsac 1')
+#     x = P.exploitant
+#     print(x)
+#
+#     param = Parametre()
+#
+#     screen = Fenetre()
+#
+#     navespace = Navigation(screen, screen.config.nav)
+#     appspace = CadreApp(screen, screen.config.app)
+#     selectspace = SelectionFonction(appspace, screen.config.select)
+#     infosspace = InfosGenerale(appspace, screen.config.infos)
+#
+#     screen.showMaximized()
+#     app.exec_()
