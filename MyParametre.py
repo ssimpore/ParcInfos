@@ -21,13 +21,13 @@ class ScreenConfig:
     def __init__(self):
         w_screen = QDesktopWidget().screenGeometry().width()
         h_screen = QDesktopWidget().screenGeometry().height()
-        ratio_x = w_screen / (w_screen * w_screen + h_screen * h_screen) * 1000 * 1.6
-        ratio_y = h_screen / (w_screen * w_screen + h_screen * h_screen) * 1000 * 3.5
+        ratio_x = w_screen / (w_screen * w_screen + h_screen * h_screen) * 1000 * 1.3
+        ratio_y = h_screen / (w_screen * w_screen + h_screen * h_screen) * 1000 * 2.7
 
         w_nav = int(0.13 * w_screen)
         h_nav = int(0.06 * h_screen)
         x_nav = int((w_screen - w_nav) // 2)
-        y_nav = int(((h_screen - h_nav) // 2) * 0.1)
+        y_nav = int(((h_screen - h_nav) // 2) * 0.0)
 
         w_app = int(ratio_x * w_screen)
         h_app = int(ratio_y * h_screen)
@@ -48,7 +48,7 @@ class ScreenConfig:
         self.app = (x_app, y_app, w_app, h_app)
         self.select = (x_select, y_select, w_select, h_select)
         self.infos = (x_infos, y_infos, w_infos, h_infos)
-        self.data = ['Arsac 1', 'Arsac 2', 'Arsac 3']
+
 
 
 if __name__ == "__main__":
