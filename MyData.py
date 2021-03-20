@@ -15,7 +15,7 @@ class Data:
             x = r
         else:
             x = Data.verify_name
-        return x
+        return str(x)
 
     def __init__(self, new=False):
         self.index = None
@@ -109,6 +109,18 @@ class Mainteneur(Data):
             msg = f"Nom: {self.nom}\nAstreinte: {self.astreinte}\nEmail: {self.email_entreprise}"
             return msg
 
+    def __init__(self, nom_parc, new=False):
+        super().__init__(new)
+        self.strat_maint = Data.verify(self.dfparc, nom_parc, 'STRATÉGIE DE MAINTENANCE')
+        self.type_full = Data.verify(self.dfparc, nom_parc, 'TYPE FULL SCOPE')
+        self.N12 = Mainteneur.Niveau(Data.verify(self.dfparc, nom_parc, 'MAINTENEUR 1&2'))
+        self.N34 = Mainteneur.Niveau(Data.verify(self.dfparc, nom_parc, 'MAINTENEUR 3&4'))
+        self.FSC = Mainteneur.Niveau(Data.verify(self.dfparc, nom_parc, 'MAINTENEUR FULL SCOPE'))
+
+    def __repr__(self):
+        msg = f"STRATÉGIE DE MAINTENANCE :{self.strat_maint}\n\nMainteneur 1&2 :\nNom: {self.N12} \n\nMainteneur 3&4 :\nNom: {self.N34} \n\nMainteneur Full Scope :\nNom: {self.FSC}"
+        return msg
+
 
 class Parc(Data):
     def verify(self, nom, **kwargs):
@@ -154,5 +166,9 @@ class Parc(Data):
 
 
 if __name__ == "__main__":
-    x = Data()
-    print(x)
+    x = Parc('Arsac 1')
+    print(x.mainteneur.N12)
+
+
+
+

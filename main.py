@@ -10,5 +10,10 @@ if __name__ == "__main__":
     appspace = CadreApp(screen, screen.config.app)
     selectspace = SelectionFonction(appspace, screen.config.select)
     infosspace = InfosGenerale(appspace, screen.config.infos)
+
+
+
+
+
     screen.showMaximized()
     app.exec_()
