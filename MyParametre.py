@@ -21,7 +21,7 @@ class ScreenConfig:
     def __init__(self):
         w_screen = QDesktopWidget().screenGeometry().width()
         h_screen = QDesktopWidget().screenGeometry().height()
-        ratio_x = w_screen / (w_screen * w_screen + h_screen * h_screen) * 1000 * 1.5
+        ratio_x = w_screen / (w_screen * w_screen + h_screen * h_screen) * 1000 * 1.7
         ratio_y = h_screen / (w_screen * w_screen + h_screen * h_screen) * 1000 * 3.5
 
         w_nav = int(0.13 * w_screen)
