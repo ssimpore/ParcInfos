@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QDesktopWidget
+from MyData import *
 
 
 class Screenlabel:
@@ -7,10 +8,47 @@ class Screenlabel:
         self.list_app = ['INFOS', 'ALERTE']
         self.list_option = ['Informations générales', 'Informations ACR (ENEDIS)', 'Informations COM (IP)',
                             'Informations autres']
-        self.label_col1 = ['Parc', 'Agence', 'Exploitant', 'Responsable', 'SCADA', 'Maintenance', 'N° mainteneur',
-                           'Longitude']
-        self.label_col2 = ['Technologie', 'N° astreinte', 'N° exploitant', 'N° responsable', 'Statut parc',
-                           'Mainteneur', 'N° astreinte maint.', 'Latitude']
+
+        self.list_option = ['Informations générales', 'Autres Informations']
+
+        parc = Parc()
+
+        self.x = {'Nom du parc': parc.nom,
+                  'Agence': parc.agence.nom,
+                  'Exploitant': parc.exploitant.nom,
+                  'Responsable': parc.responsable.nom,
+                  'SCADA principal': parc.scada,
+                  'Stratégie. maint': parc.mainteneur.strat_maint,
+                  'Tél mainteneur': parc.mainteneur.N12.num_referent,
+                  'Longitude': parc.longitude,
+
+                  'Technologie': parc.technologie,
+                  'Tél astreinte agence': parc.agence.astreinte,
+                  'Tél exploitant': parc.exploitant.telephone,
+                  'Tél responsable': parc.responsable.telephone,
+                  'Statut parc': parc.statut,
+                  'Mainteneur principal': parc.mainteneur.N12.nom,
+                  'Tél astreinte maint': parc.mainteneur.N12.astreinte,
+                  'Latitude': parc.latitude,
+
+                  'Trigramme': parc.trigramme,
+                  'Server': parc.server,
+                  'Agregation': parc.agregation,
+                  'N° cardi': parc.cardi,
+                  'Commentaire': parc.commentaire,
+                  'Départ': parc.depart,
+                  'IP ADSL': parc.ip_adsl,
+                  'IP ASA': parc.ip_asa,
+                  'IP Satellite': parc.ip_satellite,
+                  'IP SDRT': parc.ip_sdrt,
+
+                  'Tél ACR (ENEDIS)': parc.num_acr,
+                  'Tél ADSL': parc.num_adsl,
+                  'Poste livraison': parc.pdl,
+                  'Poste source': parc.psource,
+                  'Parc en récette': parc.recette,
+                  }
+        self.label = self.x.keys()
 
     def __repr__(self):
         msg = f"Label d'affichage"
@@ -21,13 +59,13 @@ class ScreenConfig:
     def __init__(self):
         w_screen = QDesktopWidget().screenGeometry().width()
         h_screen = QDesktopWidget().screenGeometry().height()
-        ratio_x = w_screen / (w_screen * w_screen + h_screen * h_screen) * 1000 * 1.7
-        ratio_y = h_screen / (w_screen * w_screen + h_screen * h_screen) * 1000 * 3.5
+        ratio_x = w_screen / (w_screen * w_screen + h_screen * h_screen) * 1000 * 1.9
+        ratio_y = h_screen / (w_screen * w_screen + h_screen * h_screen) * 1000 * 3.8
 
         w_nav = int(0.13 * w_screen)
         h_nav = int(0.06 * h_screen)
         x_nav = int((w_screen - w_nav) // 2)
-        y_nav = int(((h_screen - h_nav) // 2) * 0.1)
+        y_nav = int(((h_screen - h_nav) // 2) * 0.0)
 
         w_app = int(ratio_x * w_screen)
         h_app = int(ratio_y * h_screen)
@@ -51,5 +89,5 @@ class ScreenConfig:
 
 
 if __name__ == "__main__":
-    config = ScreenConfig()
-    print(config)
+    s = Screenlabel()
+    print(s.x)

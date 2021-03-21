@@ -7,7 +7,8 @@ class Data:
     verify_name = 'None'
 
     def verify(self, nom_parc, variable):
-        if nom_parc in list(self.index):
+        vide = (nom_parc in list(self.index)) and (nom_parc != None)
+        if vide:
             r = self.loc[nom_parc, variable]
         else:
             r = Data.verify_name
@@ -57,7 +58,7 @@ class Data:
 
 
 class Exploitant(Data):
-    def __init__(self, nom_parc, new=False):
+    def __init__(self, nom_parc=None, new=False):
         super().__init__(new)
         self.nom = Data.verify(self.dfparc, nom_parc, 'EXPLOITANT')
         self.telephone = Data.verify(self.dfexploitant, self.nom, 'TELEPHONE')
@@ -69,7 +70,7 @@ class Exploitant(Data):
 
 
 class Responsable(Data):
-    def __init__(self, nom_parc, new=False):
+    def __init__(self, nom_parc=None, new=False):
         super().__init__(new)
         self.agence = Data.verify(self.dfparc, nom_parc, 'AGENCE')
         self.nom = Data.verify(self.dfresponsable, self.agence, 'NOM')
@@ -82,7 +83,7 @@ class Responsable(Data):
 
 
 class Agence(Data):
-    def __init__(self, nom_parc, new=False):
+    def __init__(self, nom_parc=None, new=False):
         super().__init__(new)
         self.nom = Data.verify(self.dfparc, nom_parc, 'AGENCE')
         self.responsable = Data.verify(self.dfresponsable, self.nom, 'NOM')
@@ -109,7 +110,7 @@ class Mainteneur(Data):
             msg = f"Nom: {self.nom}\nAstreinte: {self.astreinte}\nEmail: {self.email_entreprise}"
             return msg
 
-    def __init__(self, nom_parc, new=False):
+    def __init__(self, nom_parc=None, new=False):
         super().__init__(new)
         self.strat_maint = Data.verify(self.dfparc, nom_parc, 'STRATÉGIE DE MAINTENANCE')
         self.type_full = Data.verify(self.dfparc, nom_parc, 'TYPE FULL SCOPE')
@@ -130,7 +131,7 @@ class Parc(Data):
             r = Data.verify_name
         return r
 
-    def __init__(self, nom_parc, new=False):
+    def __init__(self, nom_parc=None, new=False):
         super().__init__(new)
         self.index = None
         self.nom = Parc.verify(self.dfparc, nom_parc, )
@@ -168,7 +169,3 @@ class Parc(Data):
 if __name__ == "__main__":
     x = Parc('Arsac 1')
     print(x.mainteneur.N12)
-
-
-
-
