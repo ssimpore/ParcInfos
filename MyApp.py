@@ -66,6 +66,7 @@ class Cadre(QFrame):
 class CadreApp(Cadre):
     def __init__(self, parent=None, positionsize=None, new=False):
         super().__init__(parent, positionsize, new)
+        #self.setMaximumSize(1000, 600)
 
 
 class SelectionFonction1(Cadre):
@@ -92,31 +93,27 @@ class SelectionFonction1(Cadre):
 class SelectionFonction(Cadre):
     def __init__(self, parent=None, positionsize=None, new=False):
         super().__init__(parent, positionsize, new)
-
         selection_layout = QVBoxLayout()
         h_layout_parc = QHBoxLayout()
         h_layout_execute = QHBoxLayout()
-
         login_form_layout = QFormLayout()
         v_login_btn_layout = QVBoxLayout()
         login_layout = QHBoxLayout()
         layout = QVBoxLayout()
-
         login_layout.addLayout(login_form_layout)
         login_layout.addLayout(v_login_btn_layout)
-
         selection_layout.addLayout(h_layout_parc)
         selection_layout.addLayout(h_layout_execute)
-
         layout.addLayout(login_layout)
         layout.addLayout(selection_layout)
 
         self.setLayout(layout)
-
         self.username_edit = QLineEdit()
         self.password_edit = QLineEdit()
+
         self.username_edit.setFixedWidth(200)
         self.password_edit.setFixedWidth(200)
+
         login_form_layout.addRow(QLabel("Username"), self.username_edit)
         login_form_layout.addRow(QLabel("Password"), self.password_edit)
 
@@ -127,14 +124,14 @@ class SelectionFonction(Cadre):
         self.check_solaire = QCheckBox("Solaire")
         self.check_solaire.setChecked(True)
         self.check_eolien = QCheckBox("Eolien")
-        self.check_eolien.setChecked(True)
+        self.check_eolien.setChecked(False)
         self.check_update = QCheckBox("Update")
-        # self.check_all.setChecked(True)
+        self.check_update.setChecked(False)
         self.button_update = QToolButton()
         self.button_update.setFixedWidth(100)
         self.button_update.setText('Valider')
         self.comb_selection_parc = QComboBox()
-        self.comb_selection_parc.setMinimumSize(130, 30)
+
         self.button_execute = PushButton('GO')
         self.button_execute.setMinimumSize(130, 30)
 
@@ -143,69 +140,76 @@ class SelectionFonction(Cadre):
         h_layout_parc.addWidget(self.check_update)
         h_layout_parc.addWidget(self.button_update)
 
+        h_layout_parc.addWidget(self.comb_selection_parc)
+        h_layout_parc.addWidget(self.button_execute)
+
+        self.button_resume = QTextBrowser()
         h_layout_execute.addWidget(self.comb_selection_parc)
-        h_layout_execute.addWidget(self.button_execute)
+        h_layout_execute.addWidget(self.button_resume)
 
-    def updatedata(self):
-        self.data = Data(self.check_update.isChecked())
+        self.comb_selection_parc.setMinimumSize(30, 40)
+        self.button_resume.setMaximumSize(200, 40)
 
-    def go_hide(self):
-        self.comb_selection_parc.hide()
-        self.button_execute.hide()
-
-    def go_show(self):
-        self.comb_selection_parc.show()
-        self.button_execute.show()
-
-        # self.setLayout(h_layout_parc)
-
-    def initialize(self):
-        self.selection[0].setChecked(True)
-        self.comb_selection_parc.addItems(list(self.data.dfsolar.index))
+        # h_layout_execute.addWidget(self.comb_selection_parc)
+        # h_layout_execute.addWidget(self.button_execute)
 
 
-# noinspection PyAttributeOutsideInit
 class InfosGenerale(Cadre):
     def __init__(self, parent=None, positionsize=None, new=False):
         super().__init__(parent, positionsize, new)
 
-        self.label = self.label.label
-        self.display2()
+        self.displayInfos()
+        # self.goSetChangeValue('Arsac 1')
 
-    def display2(self):
-        self.sortie('')
+    def displayInfos(self):
+        N2 = 16
 
-        label_all = list(self.out.keys())
-        label = label_all[:24]
+        self.label_used = self.getLabel()
+
+        self.label = [self.makeDisplay(elt, 1) for elt in self.label_used if (self.label_used.index(elt) < N2)] \
+                     + [self.makeDisplay(elt, 2) for elt in self.label_used if
+                        ((self.label_used.index(elt) >= N2) and (self.label_used.index(elt) < 24))]
+
+        self.textbrowser = [self.makeDisplay(str(elt), 3) for elt in range(0, len(self.label_used))]
 
         layout = QGridLayout()
         self.setLayout(layout)
-
-        self.label = [self.makeDisplay(elt, 1) for elt in label if (label.index(elt) < 16)] \
-                     + [self.makeDisplay(elt, 2) for elt in label if (label.index(elt) >= 16)]
-
-        self.value = [self.makeDisplay(str(elt), 3) for elt in range(0, len(label))]
-
-        for i in range(16, len(self.label)):
-            self.label[i].addItems(label)
-            self.label[i].setCurrentText(label[i])
-
+        for i in range(N2, len(self.label)):
+            self.label[i].addItems(self.label_used)
+            self.label[i].setCurrentText(self.label_used[i])
         n = 3
         for i in range(0, int(len(self.label))):
 
             if i < int(len(self.label) / n):
                 layout.addWidget(self.label[i], i, 0)
-                layout.addWidget(self.value[i], i, 1)
+                layout.addWidget(self.textbrowser[i], i, 1)
             elif i >= int(len(self.label) / n) and (i < 2 * int(len(self.label) / n)):
                 layout.addWidget(self.label[i], i - int(len(self.label) / n), 2)
-                layout.addWidget(self.value[i], i - int(len(self.label) / n), 3)
+                layout.addWidget(self.textbrowser[i], i - int(len(self.label) / n), 3)
             else:
                 layout.setColumnStretch(4, 1)
-                layout.addWidget(self.label[i], i - 2 * int(len(self.label) / n), 4, 1, 2)
-                layout.addWidget(self.value[i], i - 2 * int(len(self.label) / n), 5)
+                layout.addWidget(self.label[i], i - 2 * int(len(self.label) / n), 4)
+                layout.addWidget(self.textbrowser[i], i - 2 * int(len(self.label) / n), 5)
 
         layout.addWidget(self.makeDisplay('Commentaire', 1), 9, 0)
         layout.addWidget(self.makeDisplay('Commentaire', 3), 10, 0, 10, 6)
+
+    def setChangeValue(self, i):
+        self.textbrowser[i].setText('R :' + self.out[self.label[i].currentText()])
+
+    def goSetChangeValue(self, curent=None):
+        self.out = self.computeOutput(curent)
+        for i in range(0, len(self.label)):
+            self.textbrowser[i].setText(self.out[self.label_used[i]])
+
+        self.label[16].currentIndexChanged['QString'].connect(lambda: self.setChangeValue(16))
+        self.label[17].currentIndexChanged['QString'].connect(lambda: self.setChangeValue(17))
+        self.label[18].currentIndexChanged['QString'].connect(lambda: self.setChangeValue(18))
+        self.label[19].currentIndexChanged['QString'].connect(lambda: self.setChangeValue(19))
+        self.label[20].currentIndexChanged['QString'].connect(lambda: self.setChangeValue(20))
+        self.label[21].currentIndexChanged['QString'].connect(lambda: self.setChangeValue(21))
+        self.label[22].currentIndexChanged['QString'].connect(lambda: self.setChangeValue(22))
+        self.label[23].currentIndexChanged['QString'].connect(lambda: self.setChangeValue(23))
 
     def initialize(self):
         self.textBrowser_comment.clear()
@@ -213,65 +217,49 @@ class InfosGenerale(Cadre):
             self.infos_col1[i].clear()
             self.infos_col2[i].clear()
 
-    def sortie(self, nom_parc):
-        parc = Parc()
-        self.out = {'Nom du parc': parc.nom,
-                    'Agence': parc.agence.nom,
-                    'Exploitant': parc.exploitant.nom,
-                    'Responsable': parc.responsable.nom,
-                    'SCADA principal': parc.scada,
-                    'Stratégie. maint': parc.mainteneur.strat_maint,
-                    'Tél mainteneur': parc.mainteneur.N12.num_referent,
-                    'Longitude': parc.longitude,
+    def computeOutput(self, nom_parc=None):
+        parc = Parc(nom_parc)
+        x = {'Nom du parc': parc.nom,
+             'Agence': parc.agence.nom,
+             'Exploitant': parc.exploitant.nom,
+             'Responsable': parc.responsable.nom,
+             'SCADA principal': parc.scada,
+             'Stratégie. maint': parc.mainteneur.strat_maint,
+             'Tél mainteneur': parc.mainteneur.N12.num_referent,
+             'Longitude': parc.longitude,
 
-                    'Technologie': parc.technologie,
-                    'Tél astreinte agence': parc.agence.astreinte,
-                    'Tél exploitant': parc.exploitant.telephone,
-                    'Tél responsable': parc.responsable.telephone,
-                    'Statut parc': parc.statut,
-                    'Mainteneur principal': parc.mainteneur.N12.nom,
-                    'Tél astreinte maint': parc.mainteneur.N12.astreinte,
-                    'Latitude': parc.latitude,
+             'Technologie': parc.technologie,
+             'Tél astreinte agence': parc.agence.astreinte,
+             'Tél exploitant': parc.exploitant.telephone,
+             'Tél responsable': parc.responsable.telephone,
+             'Statut parc': parc.statut,
+             'Mainteneur principal': parc.mainteneur.N12.nom,
+             'Tél astreinte maint': parc.mainteneur.N12.astreinte,
+             'Latitude': parc.latitude,
 
-                    'Trigramme': parc.trigramme,
-                    'Server': parc.server,
-                    'Agregation': parc.agregation,
-                    'N° cardi': parc.cardi,
+             'Trigramme': parc.trigramme,
+             'Server': parc.server,
+             'Agregation': parc.agregation,
+             'N° cardi': parc.cardi,
 
-                    'Départ': parc.depart,
-                    'IP ADSL': parc.ip_adsl,
-                    'IP ASA': parc.ip_asa,
-                    'IP Satellite': parc.ip_satellite,
-                    'IP SDRT': parc.ip_sdrt,
+             'Départ': parc.depart,
+             'IP ADSL': parc.ip_adsl,
+             'IP ASA': parc.ip_asa,
+             'IP Satellite': parc.ip_satellite,
+             'IP SDRT': parc.ip_sdrt,
 
-                    'Tél ACR (ENEDIS)': parc.num_acr,
-                    'Tél ADSL': parc.num_adsl,
-                    'Poste livraison': parc.pdl,
-                    'Poste source': parc.psource,
-                    'Parc en récette': parc.recette,
-                    'Commentaire': parc.commentaire,
-                    }
+             'Tél ACR (ENEDIS)': parc.num_acr,
+             'Tél ADSL': parc.num_adsl,
+             'Poste livraison': parc.pdl,
+             'Poste source': parc.psource,
+             'Parc en récette': parc.recette,
+             'Commentaire': parc.commentaire,
+             }
+        return x
 
-    def setValue(self, parc):
-        # self.infos_col1[0].setText(parc.nom + ' (' + parc.trigramme + ')')
-        # self.infos_col1[1].setText(parc.agence.nom)
-        # self.infos_col1[2].setText(parc.exploitant.nom)
-        # self.infos_col1[3].setText(parc.responsable.nom)
-        # self.infos_col1[4].setText(parc.scada)
-        # self.infos_col1[5].setText(parc.mainteneur.strat_maint)
-        # self.infos_col1[6].setText(parc.mainteneur.N12.num_referent)
-        # self.infos_col1[7].setText(parc.longitude)
-        #
-        # self.infos_col2[0].setText(parc.technologie)
-        # self.infos_col2[1].setText(parc.agence.astreinte)
-        # self.infos_col2[2].setText(parc.exploitant.telephone)
-        # self.infos_col2[3].setText(parc.responsable.telephone)
-        # self.infos_col2[4].setText(parc.statut)
-        # self.infos_col2[5].setText(parc.mainteneur.N12.nom)
-        # self.infos_col2[6].setText(parc.mainteneur.N12.astreinte)
-        # self.infos_col2[7].setText(parc.latitude)
-
-        self.textBrowser_comment.setText(parc.commentaire)
+    def getLabel(self):
+        x = self.computeOutput()
+        return list(x.keys())[:24]
 
 
 class Navigation(Cadre):
@@ -279,6 +267,7 @@ class Navigation(Cadre):
         super().__init__(parent, positionsize, new)
         h_layout = QHBoxLayout()
         self.selection = [QRadioButton(elt) for elt in self.label.list_app]
+        self.selection[0].setChecked(True)
 
         for elt in self.selection:
             h_layout.addWidget(elt)
@@ -305,10 +294,12 @@ class Fenetre(QMainWindow):
 
         self.initialize()
 
-
         self.select.check_solaire.clicked.connect(self.update)
         self.select.check_eolien.clicked.connect(self.update)
         self.select.check_update.clicked.connect(self.update)
+
+        self.select.button_execute.clicked.connect(self.display)
+        self.select.comb_selection_parc.currentIndexChanged['QString'].connect(self.display)
 
     def update(self):
         solaire = self.select.check_solaire.isChecked()
@@ -333,7 +324,13 @@ class Fenetre(QMainWindow):
 
     def initialize(self):
         self.select.button_update.hide()
+        self.select.button_execute.hide()
         self.update()
+        self.display()
+
+    def display(self):
+        self.current = self.select.comb_selection_parc.currentText()
+        self.infos.goSetChangeValue(self.current)
 
 
 def go():

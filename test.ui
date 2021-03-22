@@ -6,44 +6,50 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>768</width>
+    <width>796</width>
     <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <property name="dockNestingEnabled">
-   <bool>false</bool>
-  </property>
-  <property name="ddd" stdset="0">
-   <string/>
-  </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QToolButton" name="toolButton">
+   <widget class="QComboBox" name="comboBox">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>150</y>
-      <width>51</width>
-      <height>21</height>
+      <x>60</x>
+      <y>170</y>
+      <width>131</width>
+      <height>22</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Update</string>
-    </property>
+    <item>
+     <property name="text">
+      <string>New Item</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>New Item</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>New Item</string>
+     </property>
+    </item>
    </widget>
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>30</y>
-      <width>120</width>
+      <x>60</x>
+      <y>50</y>
+      <width>171</width>
       <height>80</height>
      </rect>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Box</enum>
+     <enum>QFrame::WinPanel</enum>
     </property>
     <property name="frameShadow">
      <enum>QFrame::Plain</enum>
@@ -55,7 +61,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>768</width>
+     <width>796</width>
      <height>18</height>
     </rect>
    </property>
@@ -63,5 +69,22 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>comboBox</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>frame</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>155</x>
+     <y>108</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>145</x>
+     <y>107</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
