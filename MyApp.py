@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QFrame, QTextBrowser, QRadioButton, QPushButton, QComboBox, \
-    QMainWindow, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QApplication, QDesktopWidget
+    QMainWindow, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QApplication, QCheckBox, QFormLayout, QLineEdit, \
+    QToolButton
 from PyQt5 import QtCore, QtGui
 from MyData import Data, Parc
 from MyParametre import ScreenConfig, Screenlabel
@@ -37,27 +38,29 @@ class Cadre(QFrame):
     def __init__(self, parent=None, positionsize=None, new=False):
         super().__init__(parent)
         x = positionsize
+        self.new = new
         if x is not None:
             self.setGeometry(QtCore.QRect(x[0], x[1], x[2], x[3]))
         self.setFrameShape(QFrame.WinPanel)
         self.setFrameShadow(QFrame.Raised)
-        self.data = Data(new)
+        # self.data = Data(self.new)
+
         self.label = Screenlabel()
-        self.used = 2
 
-    def closeScreen(self):
-        self.close()
+    def makeDisplay(self, text='', n=1):
+        if n == 1:
+            x = Label(str(text) + ':')
+        elif n == 2:
+            x = ComboBox(str(text) + ':')
+        elif n == 3:
+            x = TextBrowser(str(text))
+        else:
+            x = None
+        return x
 
-    def openScreen(self):
-        self.show()
+    def getData(self, new):
 
-    def selectionlabel(self, used):
-        if self.used == 1:
-            self.label1 = self.label.label_col1
-            self.label2 = self.label.label_col2
-        if self.used == 2:
-            self.label1 = self.label.label_col11
-            self.label2 = self.label.label_col22
+        return Data(new)
 
 
 class CadreApp(Cadre):
@@ -65,7 +68,7 @@ class CadreApp(Cadre):
         super().__init__(parent, positionsize, new)
 
 
-class SelectionFonction(Cadre):
+class SelectionFonction1(Cadre):
 
     def __init__(self, parent=None, positionsize=None, new=False):
         super().__init__(parent, positionsize, new)
@@ -74,6 +77,7 @@ class SelectionFonction(Cadre):
         h_layout_selection = QHBoxLayout()
         h_layout_selection.addLayout(v_layout_list_option)
         h_layout_selection.addLayout(v_layout_combo_execute)
+
         self.comb_selection_parc = QComboBox()
         self.button_selection = PushButton('GO')
 
@@ -84,11 +88,83 @@ class SelectionFonction(Cadre):
         v_layout_combo_execute.addWidget(self.button_selection)
         self.setLayout(h_layout_selection)
 
+
+class SelectionFonction(Cadre):
+    def __init__(self, parent=None, positionsize=None, new=False):
+        super().__init__(parent, positionsize, new)
+
+        selection_layout = QVBoxLayout()
+        h_layout_parc = QHBoxLayout()
+        h_layout_execute = QHBoxLayout()
+
+        login_form_layout = QFormLayout()
+        v_login_btn_layout = QVBoxLayout()
+        login_layout = QHBoxLayout()
+        layout = QVBoxLayout()
+
+        login_layout.addLayout(login_form_layout)
+        login_layout.addLayout(v_login_btn_layout)
+
+        selection_layout.addLayout(h_layout_parc)
+        selection_layout.addLayout(h_layout_execute)
+
+        layout.addLayout(login_layout)
+        layout.addLayout(selection_layout)
+
+        self.setLayout(layout)
+
+        self.username_edit = QLineEdit()
+        self.password_edit = QLineEdit()
+        self.username_edit.setFixedWidth(200)
+        self.password_edit.setFixedWidth(200)
+        login_form_layout.addRow(QLabel("Username"), self.username_edit)
+        login_form_layout.addRow(QLabel("Password"), self.password_edit)
+
+        self.login_btn = QPushButton("Log In")
+        self.login_btn.setFixedWidth(200)
+        v_login_btn_layout.addWidget(self.login_btn)
+
+        self.check_solaire = QCheckBox("Solaire")
+        self.check_solaire.setChecked(True)
+        self.check_eolien = QCheckBox("Eolien")
+        self.check_eolien.setChecked(True)
+        self.check_update = QCheckBox("Update")
+        # self.check_all.setChecked(True)
+        self.button_update = QToolButton()
+        self.button_update.setFixedWidth(100)
+        self.button_update.setText('Valider')
+        self.comb_selection_parc = QComboBox()
+        self.comb_selection_parc.setMinimumSize(130, 30)
+        self.button_execute = PushButton('GO')
+        self.button_execute.setMinimumSize(130, 30)
+
+        h_layout_parc.addWidget(self.check_solaire)
+        h_layout_parc.addWidget(self.check_eolien)
+        h_layout_parc.addWidget(self.check_update)
+        h_layout_parc.addWidget(self.button_update)
+
+        h_layout_execute.addWidget(self.comb_selection_parc)
+        h_layout_execute.addWidget(self.button_execute)
+
+    def updatedata(self):
+        self.data = Data(self.check_update.isChecked())
+
+    def go_hide(self):
+        self.comb_selection_parc.hide()
+        self.button_execute.hide()
+
+    def go_show(self):
+        self.comb_selection_parc.show()
+        self.button_execute.show()
+
+        # self.setLayout(h_layout_parc)
+
     def initialize(self):
         self.selection[0].setChecked(True)
         self.comb_selection_parc.addItems(list(self.data.dfsolar.index))
 
 
+# noinspection PyAttributeOutsideInit
 class InfosGenerale(Cadre):
     def __init__(self, parent=None, positionsize=None, new=False):
         super().__init__(parent, positionsize, new)
@@ -98,41 +174,38 @@ class InfosGenerale(Cadre):
 
     def display2(self):
         self.sortie('')
-        label = list(self.out.keys())[:24]
+
+        label_all = list(self.out.keys())
+        label = label_all[:24]
 
         layout = QGridLayout()
         self.setLayout(layout)
 
-        # self.label = [Label(elt + ' :') for elt in label]
-        self.label1 = [Label(elt + ' :') for elt in label[:16]]
+        self.label = [self.makeDisplay(elt, 1) for elt in label if (label.index(elt) < 16)] \
+                     + [self.makeDisplay(elt, 2) for elt in label if (label.index(elt) >= 16)]
 
-        self.label2 = [ComboBox(elt + ' :') for elt in label[16:]]
-        self.label = self.label1 + self.label2
+        self.value = [self.makeDisplay(str(elt), 3) for elt in range(0, len(label))]
 
         for i in range(16, len(self.label)):
             self.label[i].addItems(label)
             self.label[i].setCurrentText(label[i])
 
-        self.infos = [TextBrowser(elt) for elt in range(0, len(label))]
         n = 3
-
         for i in range(0, int(len(self.label))):
+
             if i < int(len(self.label) / n):
                 layout.addWidget(self.label[i], i, 0)
-                layout.addWidget(self.infos[i], i, 1)
-
-            if i >= int(len(self.label) / n) and i < 2 * int(len(self.label) / n):
+                layout.addWidget(self.value[i], i, 1)
+            elif i >= int(len(self.label) / n) and (i < 2 * int(len(self.label) / n)):
                 layout.addWidget(self.label[i], i - int(len(self.label) / n), 2)
-                layout.addWidget(self.infos[i], i - int(len(self.label) / n), 3)
+                layout.addWidget(self.value[i], i - int(len(self.label) / n), 3)
+            else:
+                layout.setColumnStretch(4, 1)
+                layout.addWidget(self.label[i], i - 2 * int(len(self.label) / n), 4, 1, 2)
+                layout.addWidget(self.value[i], i - 2 * int(len(self.label) / n), 5)
 
-            if i >= 2 * int(len(self.label) / n):
-                layout.addWidget(self.label[i], i - 2 * int(len(self.label) / n), 4)
-                layout.addWidget(self.infos[i], i - 2 * int(len(self.label) / n), 5)
-
-        self.textBrowser_comment = TextBrowser()
-        self.label_comment = Label('Commentaire :')
-        layout.addWidget(self.label_comment, 9, 0)
-        layout.addWidget(self.textBrowser_comment, 10, 0, 10, 6)
+        layout.addWidget(self.makeDisplay('Commentaire', 1), 9, 0)
+        layout.addWidget(self.makeDisplay('Commentaire', 3), 10, 0, 10, 6)
 
     def initialize(self):
         self.textBrowser_comment.clear()
@@ -164,7 +237,7 @@ class InfosGenerale(Cadre):
                     'Server': parc.server,
                     'Agregation': parc.agregation,
                     'N° cardi': parc.cardi,
-                    'Commentaire': parc.commentaire,
+
                     'Départ': parc.depart,
                     'IP ADSL': parc.ip_adsl,
                     'IP ASA': parc.ip_asa,
@@ -176,6 +249,7 @@ class InfosGenerale(Cadre):
                     'Poste livraison': parc.pdl,
                     'Poste source': parc.psource,
                     'Parc en récette': parc.recette,
+                    'Commentaire': parc.commentaire,
                     }
 
     def setValue(self, parc):
@@ -221,35 +295,50 @@ class Fenetre(QMainWindow):
         self.setWindowIcon(QtGui.QIcon('solar-panel.png'))
         self.setWindowTitle('Help')
         self.config = ScreenConfig()
+        self.data = Data(False)
+
+        self.nav = Navigation(self, self.config.nav)
+        self.app = CadreApp(self, self.config.app)
+        self.select = SelectionFonction(self.app, self.config.select)
+
+        self.infos = InfosGenerale(self.app, self.config.infos)
+
+        self.initialize()
+
+
+        self.select.check_solaire.clicked.connect(self.update)
+        self.select.check_eolien.clicked.connect(self.update)
+        self.select.check_update.clicked.connect(self.update)
+
+    def update(self):
+        solaire = self.select.check_solaire.isChecked()
+        eolien = self.select.check_eolien.isChecked()
+        update = self.select.check_update.isChecked()
+        self.select.comb_selection_parc.clear()
+        if update:
+            self.data = Data(True)
+
+        liste = self.data.dfsolar.index
+        if solaire and not eolien:
+            liste = self.data.dfsolar.index
+        elif eolien and not solaire:
+            liste = self.data.dfwind.index
+        elif solaire and eolien:
+            liste = self.data.dfparc.index
+        elif not solaire and not eolien:
+            self.select.check_solaire.setChecked(True)
+            liste = self.data.dfsolar.index
+        self.liste = liste
+        self.select.comb_selection_parc.addItems(self.liste)
+
+    def initialize(self):
+        self.select.button_update.hide()
+        self.update()
 
 
 def go():
     app = QApplication(sys.argv)
     screen = Fenetre()
-    new = False
-
-    navespace = Navigation(screen, screen.config.nav, new)
-
-    appspace = CadreApp(screen, screen.config.app)
-
-    selectspace = SelectionFonction(appspace, screen.config.select)
-
-    infosspace = InfosGenerale(appspace, screen.config.infos)
-
-    # selectspace.initialize()
-    # navespace.initialize()
-    # infosspace.initialize()
-    # P = Parc(selectspace.comb_selection_parc.currentText())
-    # infosspace.setValue(P)
-    #
-    # def ok():
-    #     P = Parc(selectspace.comb_selection_parc.currentText())
-    #     infosspace.setValue(P)
-    #
-    # selectspace.button_selection.clicked.connect(ok)
-    #
-    # selectspace.selection[1].clicked.connect(infosspace.closeScreen)
-    # selectspace.selection[0].clicked.connect(infosspace.openScreen)
 
     screen.showMaximized()
     app.exec_()
